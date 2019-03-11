@@ -1,0 +1,3 @@
+var typedoc = typedoc || {};
+            typedoc.search = typedoc.search || {};
+            typedoc.search.data = {"kinds":{"32":"Variable","64":"Function"},"rows":[{"id":0,"kind":32,"name":"transform","url":"globals.html#transform","classes":"tsd-kind-variable tsd-is-not-exported"},{"id":1,"kind":32,"name":"pipeline","url":"globals.html#pipeline","classes":"tsd-kind-variable tsd-is-not-exported"},{"id":2,"kind":64,"name":"wrangleFile","url":"globals.html#wranglefile","classes":"tsd-kind-function"},{"id":3,"kind":64,"name":"wrangle","url":"globals.html#wrangle","classes":"tsd-kind-function"}]};
