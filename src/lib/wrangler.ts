@@ -27,9 +27,9 @@ export async function wrangleFile(
   return pipeline(wrangle(sourceCsv, transformer), jsonTransform, output);
 }
 
-export function wrangle(
+export function wrangle<INPUT, OUTPUT>(
   sourceCsv: Readable,
-  transformer: (row: any) => any
+  transformer: (row: INPUT) => OUTPUT
 ): Readable {
   const parser = parse({
     columns: true,
@@ -46,6 +46,7 @@ export function wrangle(
       return transformer(row);
     } catch (err) {
       console.error(err.message);
+      return {};
     }
   });
 
