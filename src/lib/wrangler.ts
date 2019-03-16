@@ -27,37 +27,35 @@ export async function wrangleFile(
   return pipeline(wrangle(sourceCsv, transformer), jsonTransform, output);
 }
 
-export class Transform {
-  mappings: Mapping[]
+export class Wrangler {
+  public readonly mappings: Mapping[];
 }
 
 export class Mapping {
-  name: string
-  formula: string
+  public readonly name: string;
+  public readonly formula: string;
 }
 
 export function wrangleMapping(
   sourceCsv: Readable,
-  transform: Transform
+  wrangleConfig: Wrangler
 ): Readable {
-  const transformer = (row) => {
-    const target = {};
+  const transformer = row => {
+    const mutableTarget = {};
 
-    const context = {
-      row: row
-    }
-    
-    transform.mappings.forEach(mapping => {
 
-      const mapFn = () => { 
-        'use strict';
-        return eval(mapping.formula); 
+
+    wrangleConfig.mappings.forEach(mapping => {
+      const context = {
+        row: row,
+        value: (name) => row[name]
       };
-        
-      target[mapping.name] = mapFn.call(context);
+      const mapFn = Function('"use strict"; return (' + mapping.formula + ');');
+
+      mutableTarget[mapping.name] = mapFn.call(context);
     });
-    return target;
-  }
+    return mutableTarget;
+  };
 
   return wrangle(sourceCsv, transformer);
 }

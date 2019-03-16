@@ -51,7 +51,7 @@ test.cb('can read a CSV file as a stream', t => {
   ];
 
   const output = w.wrangle(sourceCsv, row => {
-    const mutableRow:any = { ...row };
+    const mutableRow: any = { ...row };
     mutableRow.OrderID = row['Order Number'];
     delete mutableRow['Order Number'];
     return mutableRow;
@@ -77,17 +77,18 @@ test.cb('can apply transform to type', t => {
       OrderDate: new Date(2018, 1, 1)
     }
   ];
-  const mapping:w.Transform = {
-    "mappings": [ {
-           "name": "OrderID",
-           "formula": "row['Order Number']"
-           },
-           {
-               "name": "OrderDate",
-               "formula": "new Date(row['Year'],row['Month'],row['Day'])"
-           }
-       ]
-   }
+  const mapping: w.Wrangler = {
+    mappings: [
+      {
+        name: 'OrderID',
+        formula: "this.row['Order Number']"
+      },
+      {
+        name: 'OrderDate',
+        formula: "new Date(this.row['Year'],this.row['Month'],this.row['Day'])"
+      }
+    ]
+  };
   const output = w.wrangleMapping(sourceCsv, mapping);
 
   const verify = StreamTest.v2.toObjects((err, objs: any) => {
