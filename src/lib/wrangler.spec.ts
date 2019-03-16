@@ -73,19 +73,39 @@ test.cb('can apply transform to type', t => {
   const sourceCsv = fs.createReadStream(sourcePath);
   const expectedObjs = [
     {
-      OrderID: '1000',
-      OrderDate: new Date(2018, 1, 1)
+      OrderID: 1000,
+      OrderDate: new Date(2018, 1, 1),
+      ProductID: 'P-10001',
+      ProductName: 'Arugola',
+      Quantity: 5,
+      Unit: 'kg'
     }
   ];
   const mapping: w.Wrangler = {
     mappings: [
       {
         name: 'OrderID',
-        formula: "this.row['Order Number']"
+        formula: "integer('Order Number')"
       },
       {
         name: 'OrderDate',
-        formula: "new Date(this.row['Year'],this.row['Month'],this.row['Day'])"
+        formula: "new Date(value('Year'),value('Month'),value('Day'))"
+      },
+      {
+        name: 'ProductID',
+        formula: "value('Product Number')"
+      },
+      {
+        name: 'ProductName',
+        formula: "titleCase(value('Product Name'))"
+      },
+      {
+        name: 'Quantity',
+        formula: "float('Count')"
+      },
+      {
+        name: 'Unit',
+        formula: "'kg'"
       }
     ]
   };
