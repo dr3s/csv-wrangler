@@ -51,7 +51,7 @@ test.cb('can read a CSV file as a stream', t => {
   ];
 
   const output = w.wrangle(sourceCsv, row => {
-    const mutableRow = { ...row };
+    const mutableRow: any = { ...row };
     mutableRow.OrderID = row['Order Number'];
     delete mutableRow['Order Number'];
     return mutableRow;
@@ -63,6 +63,40 @@ test.cb('can read a CSV file as a stream', t => {
       throw err;
     }
     t.deepEqual(objs[0], expectedObjs[0]);
+    t.end();
+  });
+  output.pipe(verify);
+});
+
+test.cb('can apply transform to type', t => {
+  const sourcePath = path.resolve(__dirname, '../../../resources/example.csv');
+  const sourceCsv = fs.createReadStream(sourcePath);
+  const expectedObjs = [
+    {
+      OrderID: '1000',
+      OrderDate: new Date(2018, 1, 1)
+    }
+  ];
+  const mapping: w.Wrangler = {
+    mappings: [
+      {
+        name: 'OrderID',
+        formula: "this.row['Order Number']"
+      },
+      {
+        name: 'OrderDate',
+        formula: "new Date(this.row['Year'],this.row['Month'],this.row['Day'])"
+      }
+    ]
+  };
+  const output = w.wrangleMapping(sourceCsv, mapping);
+
+  const verify = StreamTest.v2.toObjects((err, objs: any) => {
+    if (err) {
+      t.fail(err.message);
+      throw err;
+    }
+    t.deepEqual(expectedObjs[0], objs[0]);
     t.end();
   });
   output.pipe(verify);

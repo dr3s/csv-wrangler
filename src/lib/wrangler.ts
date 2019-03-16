@@ -27,9 +27,40 @@ export async function wrangleFile(
   return pipeline(wrangle(sourceCsv, transformer), jsonTransform, output);
 }
 
-export function wrangle(
+export class Wrangler {
+  public readonly mappings: Mapping[];
+}
+
+export class Mapping {
+  public readonly name: string;
+  public readonly formula: string;
+}
+
+export function wrangleMapping(
   sourceCsv: Readable,
-  transformer: (row: any) => any
+  wrangleConfig: Wrangler
+): Readable {
+  const transformer = row => {
+    const mutableTarget = {};
+
+    wrangleConfig.mappings.forEach(mapping => {
+      const context = {
+        row,
+        value: name => row[name]
+      };
+      const mapFn = Function('"use strict"; return (' + mapping.formula + ');');
+
+      mutableTarget[mapping.name] = mapFn.call(context);
+    });
+    return mutableTarget;
+  };
+
+  return wrangle(sourceCsv, transformer);
+}
+
+export function wrangle<INPUT, OUTPUT>(
+  sourceCsv: Readable,
+  transformer: (row: INPUT) => OUTPUT
 ): Readable {
   const parser = parse({
     columns: true,
@@ -46,6 +77,7 @@ export function wrangle(
       return transformer(row);
     } catch (err) {
       console.error(err.message);
+      return {};
     }
   });
 
