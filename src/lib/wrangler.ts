@@ -46,11 +46,40 @@ export function wrangleMapping(
     wrangleConfig.mappings.forEach(mapping => {
       const context = {
         row,
-        value: name => row[name]
+        value: name => row[name],
+        integer: name => Math.floor(row[name]),
+        float: name => Number.parseFloat(row[name]),
+        titleCase: str => {
+          return str
+            .toLowerCase()
+            .split(' ')
+            .map(word => {
+              return word.replace(word[0], word[0].toUpperCase());
+            })
+            .join(' ');
+        }
       };
-      const mapFn = Function('"use strict"; return (' + mapping.formula + ');');
-
-      mutableTarget[mapping.name] = mapFn.call(context);
+      const mapFn = Function(
+        'row',
+        'value',
+        'integer',
+        'float',
+        'titleCase',
+        '"use strict"; return (' + mapping.formula + ');'
+      );
+      try {
+        mutableTarget[mapping.name] = mapFn.call(
+          context,
+          context.row,
+          context.value,
+          context.integer,
+          context.float,
+          context.titleCase
+        );
+      } catch (err) {
+        console.log(err.message);
+        throw err;
+      }
     });
     return mutableTarget;
   };
@@ -58,9 +87,9 @@ export function wrangleMapping(
   return wrangle(sourceCsv, transformer);
 }
 
-export function wrangle<INPUT, OUTPUT>(
+export function wrangle(
   sourceCsv: Readable,
-  transformer: (row: INPUT) => OUTPUT
+  transformer: (row) => any
 ): Readable {
   const parser = parse({
     columns: true,
