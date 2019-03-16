@@ -43,12 +43,10 @@ export function wrangleMapping(
   const transformer = row => {
     const mutableTarget = {};
 
-
-
     wrangleConfig.mappings.forEach(mapping => {
       const context = {
-        row: row,
-        value: (name) => row[name]
+        row,
+        value: name => row[name]
       };
       const mapFn = Function('"use strict"; return (' + mapping.formula + ');');
 
