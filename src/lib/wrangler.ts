@@ -27,6 +27,41 @@ export async function wrangleFile(
   return pipeline(wrangle(sourceCsv, transformer), jsonTransform, output);
 }
 
+export class Transform {
+  mappings: Mapping[]
+}
+
+export class Mapping {
+  name: string
+  formula: string
+}
+
+export function wrangleMapping(
+  sourceCsv: Readable,
+  transform: Transform
+): Readable {
+  const transformer = (row) => {
+    const target = {};
+
+    const context = {
+      row: row
+    }
+    
+    transform.mappings.forEach(mapping => {
+
+      const mapFn = () => { 
+        'use strict';
+        return eval(mapping.formula); 
+      };
+        
+      target[mapping.name] = mapFn.call(context);
+    });
+    return target;
+  }
+
+  return wrangle(sourceCsv, transformer);
+}
+
 export function wrangle<INPUT, OUTPUT>(
   sourceCsv: Readable,
   transformer: (row: INPUT) => OUTPUT

@@ -3,7 +3,6 @@ import test from 'ava';
 import fs from 'fs';
 import path from 'path';
 import StreamTest from 'streamtest';
-import mapping = require('../test/mapping.js');
 import * as w from './wrangler';
 
 test('can convert a CSV file to json', t => {
@@ -74,39 +73,29 @@ test.cb('can apply transform to type', t => {
   const sourceCsv = fs.createReadStream(sourcePath);
   const expectedObjs = [
     {
-      Year: '2018',
-      Month: '1',
-      Day: '1',
-      'Product Number': 'P-10001',
-      'Product Name': 'Arugola',
-      Count: '5,250.50',
-      'Extra Col1': 'Lorem',
-      'Extra Col2': 'Ipsum',
-      'Empty Column': '',
-      OrderID: '1000'
-    },
-
-    {
-      Year: '2017',
-      Month: '12',
-      Day: '12',
-      'Product Number': 'P-10002',
-      'Product Name': 'Iceberg lettuce',
-      Count: '500.00',
-      'Extra Col1': 'Lorem',
-      'Extra Col2': 'Ipsum',
-      'Empty Column': '',
-      OrderID: '1001'
+      OrderID: '1000',
+      OrderDate: new Date(2018, 1, 1)
     }
   ];
-  const output = w.wrangle(sourceCsv, mapping.default);
+  const mapping:w.Transform = {
+    "mappings": [ {
+           "name": "OrderID",
+           "formula": "row['Order Number']"
+           },
+           {
+               "name": "OrderDate",
+               "formula": "new Date(row['Year'],row['Month'],row['Day'])"
+           }
+       ]
+   }
+  const output = w.wrangleMapping(sourceCsv, mapping);
 
   const verify = StreamTest.v2.toObjects((err, objs: any) => {
     if (err) {
       t.fail(err.message);
       throw err;
     }
-    t.deepEqual(objs[0], expectedObjs[0]);
+    t.deepEqual(expectedObjs[0], objs[0]);
     t.end();
   });
   output.pipe(verify);
