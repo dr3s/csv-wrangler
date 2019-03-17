@@ -81,7 +81,7 @@ test.cb('can apply transform to type', t => {
       Unit: 'kg'
     }
   ];
-  const mapping: w.Wrangler = {
+  const mapping: w.WranglerConfig = {
     mappings: [
       {
         name: 'OrderID',
