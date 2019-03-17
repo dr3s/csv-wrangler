@@ -1,0 +1,12 @@
+{
+  "mappings": [
+    {
+      "name": "PolicyID",
+      "formula": "integer('policyID')"
+    },
+    {
+      "name": "Longitude",
+      "formula": "float('point_longitude')"
+    }
+  ]
+}

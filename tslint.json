@@ -20,13 +20,13 @@
     // Immutability rules
     "readonly-keyword": true,
     "readonly-array": false,
-    "no-let": true,
+    "no-let": false,
     "no-object-mutation": [true, {"ignore-prefix": "mutable"}],
     "no-delete": false,
     "no-method-signature": true,
 
     // Functional style rules
-    "no-this": true,
+    "no-this": false,
     "no-class": false,
     "no-mixed-interface": true,
     "no-console": false,
