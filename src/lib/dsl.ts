@@ -32,6 +32,25 @@ export class Mapping {
   public readonly formula: string;
 }
 
+/**
+ * A [[MappingError]] will be created for the first error during application of the mapping
+ *
+ */
+export class MappingError {
+  /**
+   * The [[Error]] during application of the mapping
+   */
+  public readonly err: Error;
+  /**
+   * The row which triggered the error
+   */
+  public readonly row: any;
+
+  public constructor(init?: Partial<MappingError>) {
+    Object.assign(this, init);
+  }
+}
+
 export function titleCase(str: string): string {
   return str
     .toLowerCase()

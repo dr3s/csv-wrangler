@@ -177,8 +177,11 @@ export function wrangle(
     relax_column_count: true
   });
 
+  const errors = new Array<dsl.MappingError>();
+
   parser.on('skip', err => {
     console.error(`skipped record due to: ${err.message}`);
+    errors.push(new dsl.MappingError({ err }));
   });
 
   // Catch terminal error
@@ -192,8 +195,9 @@ export function wrangle(
       return transformer(row);
     } catch (err) {
       console.log(err.message);
-      console.log(row);
+      console.debug(row);
       console.debug(err);
+      errors.push(new dsl.MappingError({ err, row }));
       return;
     }
   });
