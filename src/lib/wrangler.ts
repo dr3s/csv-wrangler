@@ -30,14 +30,14 @@ const pipeline = util.promisify(stream.pipeline);
  *
  * @param  sourcePath  absolute path to a source CSV file
  * @param  targetPath  absolute path to a Json file to be written
- * @param  transformer  function that accepts a single object argument and returns an object that it has transformed
+ * @param  transformOptions  can be supplied as one of the following: absolute path to config file, a [[WranglerConfig]] object, or a function that takes a row object and returns a new object
  *
  * @returns       a Promise when the target file is completely written
  */
 export async function wrangleFileAsync(
   sourcePath: string,
   targetPath: string,
-  transformer: (row: object) => object
+  transformOptions: string | dsl.WranglerConfig | ((row: object) => object)
 ): Promise<void> {
   const sourceCsv = fs.createReadStream(sourcePath);
 
@@ -47,7 +47,7 @@ export async function wrangleFileAsync(
     return JSON.stringify(data) + os.EOL;
   });
 
-  return pipeline(wrangle(sourceCsv, transformer), jsonTransform, output);
+  return pipeline(wrangle(sourceCsv, transformOptions), jsonTransform, output);
 }
 
 /**
