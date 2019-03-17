@@ -12,7 +12,7 @@ test('can convert a CSV file to json', t => {
     path.resolve(__dirname, '../../../build/example.json'),
     row => {
       t.truthy(row);
-      const mutableRow = { ...row };
+      const mutableRow = { ...row } as any;
       mutableRow.OrderID = row['Order Number'];
       delete mutableRow['Order Number'];
       return mutableRow;
@@ -82,7 +82,7 @@ test.cb('can apply transform to type', t => {
       Unit: 'kg'
     }
   ];
-  const output = w.wrangleMapping(sourceCsv, defaultMapping);
+  const output = w.wrangle(sourceCsv, defaultMapping);
 
   const verify = StreamTest.v2.toObjects((err, objs: any) => {
     if (err) {
@@ -112,7 +112,7 @@ test.cb('can handle error and skip bad rows', t => {
     }
   ];
 
-  const output = w.wrangleMapping(sourceCsv, defaultMapping);
+  const output = w.wrangle(sourceCsv, defaultMapping);
 
   const verify = StreamTest.v2.toObjects((err, objs: any) => {
     if (err) {

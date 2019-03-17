@@ -19,7 +19,7 @@ const pipeline = util.promisify(stream.pipeline);
  *   path.resolve(__dirname, 'example.json'),
  *   row => {
  *     const mutableRow = { ...row };
- *     mutableRow.OrderID = row['Order Number'];
+ *     mutableRow['OrderID'] = row['Order Number'];
  *     delete mutableRow['Order Number'];
  *     return mutableRow;
  *   }
@@ -37,7 +37,7 @@ const pipeline = util.promisify(stream.pipeline);
 export async function wrangleFileAsync(
   sourcePath: string,
   targetPath: string,
-  transformer: (row: any) => any
+  transformer: (row: object) => object
 ): Promise<void> {
   const sourceCsv = fs.createReadStream(sourcePath);
 
@@ -89,25 +89,57 @@ export async function wrangleFileAsync(
  *
  * const sourcePath = path.resolve(__dirname, 'example.csv');
  * const sourceCsv = fs.createReadStream(sourcePath);
- * w.wrangleMapping(
+ * w.wrangle(
  *   sourceCsv,
  *   mapping
  * ).pipe(outputStream);
  * ```
  *
- * @param  sourceCsv  [[Readable]] stream of a CSV file
- * @param  wrangleConfig  function that accepts a single object argument and returns an object that it has transformed
+ * ### Example of transforming with an arbitrary function
+ * ```js
+ * import * as w from 'wrangler';
  *
- * @returns       a Readable stream of objects defined by the [[WranglerConfig]]
+ * const sourcePath = path.resolve(__dirname, 'example.csv');
+ * const sourceCsv = fs.createReadStream(sourcePath);
+ *
+ * w.wrangle(
+ *  sourceCsv,
+ *   row => {
+ *     const mutableRow = { ...row };
+ *     mutableRow['OrderID'] = row['Order Number'];
+ *     delete mutableRow['Order Number'];
+ *     return mutableRow;
+ *   }
+ * ).pipe(outputStream);
+ * ```
+ *
+ * @param  sourceCsv  [[Readable]] stream of a CSV file
+ * @param  transformOptions  can be supplied as one of the following: absolute path to config file, a [[WranglerConfig]] object, or a function that takes a row object and returns a new object
+ *
+ *
+ * @returns       a Readable stream of objects defined by the [[WranglerConfig]] or transform function
  */
-export function wrangleMapping(
+export function wrangle(
   sourceCsv: Readable,
-  wrangleConfig: dsl.WranglerConfig
+  transformOptions: string | dsl.WranglerConfig | ((row: object) => object)
 ): Readable {
-  const transformer = row => {
-    const mutableTarget = {};
+  const config: dsl.WranglerConfig | ((row: object) => object) =
+    typeof transformOptions === 'string'
+      ? JSON.parse(fs.readFileSync(transformOptions, 'utf8'))
+      : transformOptions;
 
-    wrangleConfig.mappings.forEach(mapping => {
+  const transformer =
+    typeof transformOptions === 'function'
+      ? (config as ((row: object) => object))
+      : buildTransformer(config as dsl.WranglerConfig);
+
+  return _wrangle(sourceCsv, transformer);
+}
+
+function buildTransformer(config: dsl.WranglerConfig): (row: object) => object {
+  return row => {
+    const mutableTarget = {};
+    config.mappings.forEach(mapping => {
       const context = {
         m: mapping,
         source: row,
@@ -117,7 +149,6 @@ export function wrangleMapping(
         float: name => dsl.float(row, name),
         titleCase: dsl.titleCase
       };
-
       const mapFn = Function(
         'source',
         'value',
@@ -137,39 +168,11 @@ export function wrangleMapping(
     });
     return mutableTarget;
   };
-
-  return wrangle(sourceCsv, transformer);
 }
 
-/**
- * Wrangle a CSV file stream into a stream of objects
- *
- *
- * ### Example
- * ```js
- * import * as w from 'wrangler';
- * w.wrangleFile(
- *   path.resolve(__dirname, 'example.csv'),
- *   path.resolve(__dirname, 'example.json'),
- *   row => {
- *     const mutableRow = { ...row };
- *     mutableRow.OrderID = row['Order Number'];
- *     delete mutableRow['Order Number'];
- *     return mutableRow;
- *   }
- * ).catch(err => {
- *   console.log(err.message);
- * });
- * ```
- *
- * @param  sourceCsv  [[Readable]] stream of a CSV file
- * @param  transformer  function that accepts a single object argument and returns an object that it has transformed
- *
- * @returns       a Readable stream of objects defined by the [[WranglerConfig]]
- */
-export function wrangle(
+function _wrangle(
   sourceCsv: Readable,
-  transformer: (row) => any
+  transformer: (row: object) => object
 ): Readable {
   const parser = parse({
     columns: true,
@@ -190,7 +193,7 @@ export function wrangle(
     throw err;
   });
 
-  const userTransform = transform((row: any) => {
+  const userTransform = transform((row: object) => {
     try {
       return transformer(row);
     } catch (err) {
@@ -198,7 +201,7 @@ export function wrangle(
       console.debug(row);
       console.debug(err);
       errors.push(new dsl.MappingError({ err, row }));
-      return;
+      return undefined;
     }
   });
 
