@@ -47,9 +47,25 @@ export function value(row: any, name: string): string {
 }
 
 export function integer(row: any, name: string): number {
-  return Math.floor(row[name]);
+  const s = row[name];
+  if (s === undefined) {
+    throw Error(`${name} is undefined`);
+  }
+  const val = Number(s.replace(/,/g, ''));
+  if (val === undefined || Number.isNaN(val)) {
+    throw Error(`${name} is not a number`);
+  }
+  return Math.floor(val);
 }
 
 export function float(row: any, name: string): number {
-  return Number.parseFloat(row[name]);
+  const s = row[name];
+  if (s === undefined) {
+    throw Error(`${name} is undefined`);
+  }
+  const val = Number(s.replace(/,/g, ''));
+  if (val === undefined || Number.isNaN(val)) {
+    throw Error(`${name} is not a number`);
+  }
+  return val;
 }

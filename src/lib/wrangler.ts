@@ -34,7 +34,7 @@ const pipeline = util.promisify(stream.pipeline);
  *
  * @returns       a Promise when the target file is completely written
  */
-export async function wrangleFile(
+export async function wrangleFileAsync(
   sourcePath: string,
   targetPath: string,
   transformer: (row: any) => any
@@ -126,19 +126,14 @@ export function wrangleMapping(
         'titleCase',
         '"use strict"; return (' + mapping.formula + ');'
       );
-      try {
-        mutableTarget[mapping.name] = mapFn.call(
-          context,
-          context.source,
-          context.value,
-          context.integer,
-          context.float,
-          context.titleCase
-        );
-      } catch (err) {
-        console.log(err.message);
-        throw err;
-      }
+      mutableTarget[mapping.name] = mapFn.call(
+        context,
+        context.source,
+        context.value,
+        context.integer,
+        context.float,
+        context.titleCase
+      );
     });
     return mutableTarget;
   };
@@ -188,7 +183,7 @@ export function wrangle(
 
   // Catch terminal error
   parser.on('error', err => {
-    console.error(err.message);
+    console.error(err.message, err);
     throw err;
   });
 
@@ -196,8 +191,10 @@ export function wrangle(
     try {
       return transformer(row);
     } catch (err) {
-      console.error(err.message);
-      return {};
+      console.log(err.message);
+      console.log(row);
+      console.debug(err);
+      return;
     }
   });
 

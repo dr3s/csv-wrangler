@@ -7,7 +7,7 @@ import * as dsl from './dsl';
 import * as w from './wrangler';
 
 test('can convert a CSV file to json', t => {
-  return w.wrangleFile(
+  return w.wrangleFileAsync(
     path.resolve(__dirname, '../../../resources/example.csv'),
     path.resolve(__dirname, '../../../build/example.json'),
     row => {
@@ -75,42 +75,14 @@ test.cb('can apply transform to type', t => {
   const expectedObjs = [
     {
       OrderID: 1000,
-      OrderDate: new Date(2018, 1, 1),
+      OrderDate: new Date(2018, 0, 1),
       ProductID: 'P-10001',
       ProductName: 'Arugola',
-      Quantity: 5,
+      Quantity: 5250.5,
       Unit: 'kg'
     }
   ];
-  const mapping: dsl.WranglerConfig = {
-    mappings: [
-      {
-        name: 'OrderID',
-        formula: "integer('Order Number')"
-      },
-      {
-        name: 'OrderDate',
-        formula: "new Date(value('Year'),value('Month'),value('Day'))"
-      },
-      {
-        name: 'ProductID',
-        formula: "value('Product Number')"
-      },
-      {
-        name: 'ProductName',
-        formula: "titleCase(value('Product Name'))"
-      },
-      {
-        name: 'Quantity',
-        formula: "float('Count')"
-      },
-      {
-        name: 'Unit',
-        formula: "'kg'"
-      }
-    ]
-  };
-  const output = w.wrangleMapping(sourceCsv, mapping);
+  const output = w.wrangleMapping(sourceCsv, defaultMapping);
 
   const verify = StreamTest.v2.toObjects((err, objs: any) => {
     if (err) {
@@ -122,3 +94,62 @@ test.cb('can apply transform to type', t => {
   });
   output.pipe(verify);
 });
+
+test.cb('can handle error and skip bad rows', t => {
+  const sourcePath = path.resolve(
+    __dirname,
+    '../../../resources/example-error.csv'
+  );
+  const sourceCsv = fs.createReadStream(sourcePath);
+  const expectedObjs = [
+    {
+      OrderID: 1001,
+      OrderDate: new Date(2017, 11, 12, 0, 0, 0, 0),
+      ProductID: 'P-10002',
+      ProductName: 'Iceberg Lettuce',
+      Quantity: 500.0,
+      Unit: 'kg'
+    }
+  ];
+
+  const output = w.wrangleMapping(sourceCsv, defaultMapping);
+
+  const verify = StreamTest.v2.toObjects((err, objs: any) => {
+    if (err) {
+      t.fail(err.message);
+      throw err;
+    }
+    t.deepEqual(expectedObjs[0], objs[0]);
+    t.end();
+  });
+  output.pipe(verify);
+});
+
+const defaultMapping: dsl.WranglerConfig = {
+  mappings: [
+    {
+      name: 'OrderID',
+      formula: "integer('Order Number')"
+    },
+    {
+      name: 'OrderDate',
+      formula: "new Date(value('Year'),value('Month') - 1,value('Day'))"
+    },
+    {
+      name: 'ProductID',
+      formula: "value('Product Number')"
+    },
+    {
+      name: 'ProductName',
+      formula: "titleCase(value('Product Name'))"
+    },
+    {
+      name: 'Quantity',
+      formula: "float('Count')"
+    },
+    {
+      name: 'Unit',
+      formula: "'kg'"
+    }
+  ]
+};
