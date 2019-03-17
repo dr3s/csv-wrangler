@@ -1,0 +1,28 @@
+{
+  "mappings": [
+    {
+      "name": "OrderID",
+      "formula": "integer('Order Number')"
+    },
+    {
+      "name": "OrderDate",
+      "formula": "new Date(value('Year'),value('Month') - 1,value('Day'))"
+    },
+    {
+      "name": "ProductID",
+      "formula": "value('Product Number')"
+    },
+    {
+      "name": "ProductName",
+      "formula": "titleCase(value('Product Name'))"
+    },
+    {
+      "name": "Quantity",
+      "formula": "float('Count')"
+    },
+    {
+      "name": "Unit",
+      "formula": "'kg'"
+    }
+  ]
+}
