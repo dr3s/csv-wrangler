@@ -124,6 +124,7 @@ test.cb('can handle error and skip bad rows', t => {
   });
   output.pipe(verify);
 });
+
 test.cb('can read config from file', t => {
   const sourcePath = path.resolve(__dirname, '../../../resources/example.csv');
   const sourceCsv = fs.createReadStream(sourcePath);
@@ -149,6 +150,35 @@ test.cb('can read config from file', t => {
       throw err;
     }
     t.deepEqual(expectedObjs[0], objs[0]);
+    t.end();
+  });
+  output.pipe(verify);
+});
+
+test.cb('can read large dataset', t => {
+  const sourcePath = path.resolve(
+    __dirname,
+    '../../../resources/large_sample.csv'
+  );
+  const sourceCsv = fs.createReadStream(sourcePath);
+  const configPath = path.resolve(
+    __dirname,
+    '../../../resources/large-config.json'
+  );
+  const expectedObjs = [
+    {
+      PolicyID: 891996,
+      Longitude: -81.372444
+    }
+  ];
+  const output = w.wrangle(sourceCsv, configPath);
+
+  const verify = StreamTest.v2.toObjects((err, objs: any) => {
+    if (err) {
+      t.fail(err.message);
+      throw err;
+    }
+    t.deepEqual(expectedObjs[0], objs[1234]);
     t.end();
   });
   output.pipe(verify);

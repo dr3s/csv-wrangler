@@ -51,7 +51,7 @@ export async function wrangleFileAsync(
 }
 
 /**
- * Wrangle a CSV file into a stream of Objects
+ * Wrangle a CSV file stream into a stream of Objects
  *
  *
  * ### Example
@@ -150,7 +150,6 @@ function buildTransformer(config: dsl.WranglerConfig): (row: object) => object {
         titleCase: dsl.titleCase
       };
       const mapFn = Function(
-        'source',
         'value',
         'integer',
         'float',
@@ -159,7 +158,6 @@ function buildTransformer(config: dsl.WranglerConfig): (row: object) => object {
       );
       mutableTarget[mapping.name] = mapFn.call(
         context,
-        context.source,
         context.value,
         context.integer,
         context.float,
@@ -182,6 +180,7 @@ function _wrangle(
 
   const errors = new Array<dsl.MappingError>();
 
+  // log and collect parsing errors.  These unfortunately don't indicate which row of data failed.
   parser.on('skip', err => {
     console.error(`skipped record due to: ${err.message}`);
     errors.push(new dsl.MappingError({ err }));
@@ -193,6 +192,7 @@ function _wrangle(
     throw err;
   });
 
+  // wrap the user's transformation function in a duplex stream
   const userTransform = transform((row: object) => {
     try {
       return transformer(row);
@@ -201,7 +201,7 @@ function _wrangle(
       console.debug(row);
       console.debug(err);
       errors.push(new dsl.MappingError({ err, row }));
-      return undefined;
+      return undefined; // skip this row in the output
     }
   });
 
