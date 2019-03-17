@@ -8,40 +8,6 @@ const transform = require('stream-transform');
 const pipeline = util.promisify(stream.pipeline);
 
 /**
- * Wrangle can be configured programmatically or from a file
- *
- * ```typescript
- * // Initialize config
- * const config = new WranglerConfig();
- * ```
- */
-export class WranglerConfig {
-  /**
-   * The [[Mapping]]s to be applied in this transformation.  They are applied in the order that they are defined.
-   */
-  public readonly mappings: Mapping[];
-}
-
-/**
- * Each [[Mapping]] defines an output field [[name]] and [[formula]] to calculate it.
- *
- *
- */
-export class Mapping {
-  /**
-   * The [[name]] of the field in the output object
-   */
-  public readonly name: string;
-  /**
-   * The [[formula]] is a simple Javascript expression used to calculate the output field value.
-   * Expressions are limited in scope and can only use basic datatypes, the defined mapping functions,
-   * and other globals.
-   *
-   */
-  public readonly formula: string;
-}
-
-/**
  * Wrangle a CSV file into a new line delimited JSON file
  *
  *
@@ -136,7 +102,7 @@ export async function wrangleFile(
  */
 export function wrangleMapping(
   sourceCsv: Readable,
-  wrangleConfig: WranglerConfig
+  wrangleConfig: dsl.WranglerConfig
 ): Readable {
   const transformer = row => {
     const mutableTarget = {};

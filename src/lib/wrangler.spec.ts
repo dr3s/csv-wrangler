@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import StreamTest from 'streamtest';
 import * as w from './wrangler';
+import * as dsl from './dsl';
 
 test('can convert a CSV file to json', t => {
   return w.wrangleFile(
@@ -81,7 +82,7 @@ test.cb('can apply transform to type', t => {
       Unit: 'kg'
     }
   ];
-  const mapping: w.WranglerConfig = {
+  const mapping: dsl.WranglerConfig = {
     mappings: [
       {
         name: 'OrderID',
