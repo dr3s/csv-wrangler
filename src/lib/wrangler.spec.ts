@@ -3,8 +3,8 @@ import test from 'ava';
 import fs from 'fs';
 import path from 'path';
 import StreamTest from 'streamtest';
-import * as w from './wrangler';
 import * as dsl from './dsl';
+import * as w from './wrangler';
 
 test('can convert a CSV file to json', t => {
   return w.wrangleFile(
