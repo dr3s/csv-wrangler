@@ -3,17 +3,16 @@ import fs from 'fs';
 import os from 'os';
 import stream, { Readable } from 'stream';
 import util from 'util';
-import * as dsl from './dsl';
+import * as api from './api';
 const transform = require('stream-transform');
 const pipeline = util.promisify(stream.pipeline);
 
 /**
- * Wrangle a CSV file into a new line delimited JSON file
- *
+ * Wrangle a CSV file into a new line delimited JSON file.
  *
  * ### Example
  * ```js
- * import * as w from 'wrangler';
+ * import * as w from 'csv-wrangler';
  * w.wrangleFile(
  *   path.resolve(__dirname, 'example.csv'),
  *   path.resolve(__dirname, 'example.json'),
@@ -29,7 +28,7 @@ const pipeline = util.promisify(stream.pipeline);
  * ```
  *
  * @param  sourcePath  absolute path to a source CSV file
- * @param  targetPath  absolute path to a Json file to be written
+ * @param  targetPath  absolute path to a file to be written with newline delimited JSON objects
  * @param  transformOptions  can be supplied as one of the following: absolute path to config file, a [[WranglerConfig]] object, or a function that takes a row object and returns a new object
  *
  * @returns       a Promise when the target file is completely written
@@ -37,12 +36,13 @@ const pipeline = util.promisify(stream.pipeline);
 export async function wrangleFileAsync(
   sourcePath: string,
   targetPath: string,
-  transformOptions: string | dsl.WranglerConfig | ((row: object) => object)
+  transformOptions: string | api.WranglerConfig | ((row: object) => object)
 ): Promise<void> {
   const sourceCsv = fs.createReadStream(sourcePath);
 
   const output = fs.createWriteStream(targetPath);
 
+  // use new line separators in the output file
   const jsonTransform = transform(data => {
     return JSON.stringify(data) + os.EOL;
   });
@@ -51,12 +51,15 @@ export async function wrangleFileAsync(
 }
 
 /**
- * Wrangle a CSV file stream into a stream of Objects
+ * Wrangle a CSV file stream into a stream of Objects.
+ *
+ * Files should be provided as a [[Readable]] stream of comma separated values with newline delimters.
+ * Configuration of the transformation can be provided programmatically or via a file.
  *
  *
  * ### Example
  * ```typescript
- * import * as w from 'wrangler';
+ * import * as w from 'csv-wrangler';
  *
  * const mapping: w.WranglerConfig = {
  *   mappings: [
@@ -97,7 +100,7 @@ export async function wrangleFileAsync(
  *
  * ### Example of transforming with an arbitrary function
  * ```js
- * import * as w from 'wrangler';
+ * import * as w from 'csv-wrangler';
  *
  * const sourcePath = path.resolve(__dirname, 'example.csv');
  * const sourceCsv = fs.createReadStream(sourcePath);
@@ -121,9 +124,9 @@ export async function wrangleFileAsync(
  */
 export function wrangle(
   sourceCsv: Readable,
-  transformOptions: string | dsl.WranglerConfig | ((row: object) => object)
+  transformOptions: string | api.WranglerConfig | ((row: object) => object)
 ): Readable {
-  const config: dsl.WranglerConfig | ((row: object) => object) =
+  const config: api.WranglerConfig | ((row: object) => object) =
     typeof transformOptions === 'string'
       ? JSON.parse(fs.readFileSync(transformOptions, 'utf8'))
       : transformOptions;
@@ -131,25 +134,26 @@ export function wrangle(
   const transformer =
     typeof transformOptions === 'function'
       ? (config as ((row: object) => object))
-      : buildTransformer(config as dsl.WranglerConfig);
+      : buildTransformer(config as api.WranglerConfig);
 
   return _wrangle(sourceCsv, transformer);
 }
 
-function buildTransformer(config: dsl.WranglerConfig): (row: object) => object {
+function buildTransformer(config: api.WranglerConfig): (row: object) => object {
   return row => {
     const mutableTarget = {};
     config.mappings.forEach(mapping => {
       const context = {
         m: mapping,
-        source: row,
-        dsl,
-        value: name => dsl.value(row, name),
-        integer: name => dsl.integer(row, name),
-        float: name => dsl.float(row, name),
-        titleCase: dsl.titleCase
+        row,
+        value: name => api.Dsl.value(row, name),
+        integer: name => api.Dsl.integer(row, name),
+        float: name => api.Dsl.float(row, name),
+        titleCase: name => api.Dsl.titleCase(name)
       };
+
       const mapFn = Function(
+        'row',
         'value',
         'integer',
         'float',
@@ -158,6 +162,7 @@ function buildTransformer(config: dsl.WranglerConfig): (row: object) => object {
       );
       mutableTarget[mapping.name] = mapFn.call(
         context,
+        context.row,
         context.value,
         context.integer,
         context.float,
@@ -178,12 +183,10 @@ function _wrangle(
     relax_column_count: true
   });
 
-  const errors = new Array<dsl.MappingError>();
-
   // log and collect parsing errors.  These unfortunately don't indicate which row of data failed.
   parser.on('skip', err => {
     console.error(`skipped record due to: ${err.message}`);
-    errors.push(new dsl.MappingError({ err }));
+    outputStream.emit('skip', err);
   });
 
   // Catch terminal error
@@ -196,14 +199,14 @@ function _wrangle(
   const userTransform = transform((row: object) => {
     try {
       return transformer(row);
-    } catch (err) {
-      console.log(err.message);
-      console.debug(row);
-      console.debug(err);
-      errors.push(new dsl.MappingError({ err, row }));
+    } catch (mutableErr) {
+      mutableErr.row = row;
+      outputStream.emit('skip', mutableErr);
       return undefined; // skip this row in the output
     }
   });
 
-  return sourceCsv.pipe(parser).pipe(userTransform);
+  const outputStream = sourceCsv.pipe(parser).pipe(userTransform);
+
+  return outputStream;
 }
