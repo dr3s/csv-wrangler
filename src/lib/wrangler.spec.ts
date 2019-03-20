@@ -193,21 +193,18 @@ test.cb('skips errors when parsing', t => {
     '../../../resources/parse-error.csv'
   );
   const sourceCsv = fs.createReadStream(sourcePath);
-  const output = w
-    .wrangle(sourceCsv, defaultMapping)
-    .on('skip', (err) => {
-      t.is(err.message.split(' ')[0], 'Invalid');
-      t.pass();
-    });
+  const output = w.wrangle(sourceCsv, defaultMapping).on('skip', err => {
+    t.is(err.message.split(' ')[0], 'Invalid');
+    t.pass();
+  });
 
-  const verify = StreamTest.v2.toObjects((err) => {
+  const verify = StreamTest.v2.toObjects(err => {
     if (!err) {
-      t.end()
+      t.end();
     }
-  })
+  });
   output.pipe(verify);
 });
-
 
 const defaultMapping: w.WranglerConfig = {
   mappings: [
