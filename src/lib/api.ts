@@ -82,6 +82,14 @@ export interface MappingError extends Error {
  * All functions that take a row as the first argument have been curried, so that it is provided for you.
  */
 export namespace Dsl {
+  export function curry(row: any): any {
+    return {
+      value: name => value(row, name),
+      integer: name => integer(row, name),
+      float: name => float(row, name),
+      titleCase: name => titleCase(name)
+    };
+  }
   /**
    * Convert a string to Title Case. ex: "a green apple" => "A Green Apple"
    *

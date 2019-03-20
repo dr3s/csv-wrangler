@@ -144,29 +144,16 @@ function buildTransformer(config: api.WranglerConfig): (row: object) => object {
     const mutableTarget = {};
     config.mappings.forEach(mapping => {
       const context = {
-        m: mapping,
-        row,
-        value: name => api.Dsl.value(row, name),
-        integer: name => api.Dsl.integer(row, name),
-        float: name => api.Dsl.float(row, name),
-        titleCase: name => api.Dsl.titleCase(name)
+        ...api.Dsl.curry(row)
       };
 
       const mapFn = Function(
-        'row',
-        'value',
-        'integer',
-        'float',
-        'titleCase',
+        ...Object.keys(context),
         '"use strict"; return (' + mapping.formula + ');'
       );
       mutableTarget[mapping.name] = mapFn.call(
         context,
-        context.row,
-        context.value,
-        context.integer,
-        context.float,
-        context.titleCase
+        ...Object.values(context),
       );
     });
     return mutableTarget;
