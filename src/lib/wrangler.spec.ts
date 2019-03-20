@@ -187,6 +187,28 @@ test.cb('can read large dataset', t => {
   output.pipe(verify);
 });
 
+test.cb('skips errors when parsing', t => {
+  const sourcePath = path.resolve(
+    __dirname,
+    '../../../resources/parse-error.csv'
+  );
+  const sourceCsv = fs.createReadStream(sourcePath);
+  const output = w
+    .wrangle(sourceCsv, defaultMapping)
+    .on('skip', (err) => {
+      t.is(err.message.split(' ')[0], 'Invalid');
+      t.pass();
+    });
+
+  const verify = StreamTest.v2.toObjects((err) => {
+    if (!err) {
+      t.end()
+    }
+  })
+  output.pipe(verify);
+});
+
+
 const defaultMapping: w.WranglerConfig = {
   mappings: [
     {

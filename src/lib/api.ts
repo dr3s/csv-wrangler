@@ -76,34 +76,16 @@ export interface MappingError extends Error {
    */
   readonly row: any;
 }
-
 /**
- * These functions are available in scope when writing [[Mapping]] formulas.  They provide an easier way of performing common conversions.
- * All functions that take a row as the first argument have been curried, so that it is provided for you.
+ * These functions are available in scope when writing [[Mapping]] formulas.
+ * They provide an easier way of performing common conversions.
+ *
  */
-export namespace Dsl {
-  export function curry(row: any): any {
-    return {
-      value: name => value(row, name),
-      integer: name => integer(row, name),
-      float: name => float(row, name),
-      titleCase: name => titleCase(name)
-    };
-  }
-  /**
-   * Convert a string to Title Case. ex: "a green apple" => "A Green Apple"
-   *
-   * @param  str  string to be title cased
-   * @returns title cased string
-   */
-  export function titleCase(str: string): string {
-    return str
-      .toLowerCase()
-      .split(' ')
-      .map(word => {
-        return word.replace(word[0], word[0].toUpperCase());
-      })
-      .join(' ');
+export class Dsl {
+  public readonly row: any;
+
+  constructor(row: any) {
+    this.row = row;
   }
 
   /**
@@ -112,18 +94,33 @@ export namespace Dsl {
    * @param  name  of column in source row to map
    * @returns value of source column
    */
-  export function value(row: any, name: string): any {
-    return row[name];
-  }
+  public readonly value = (name: string): any => {
+    return this.row[name];
+  };
+  /**
+   * Convert a string to Title Case. ex: "a green apple" => "A Green Apple"
+   *
+   * @param  str  string to be title cased
+   * @returns title cased string
+   */
+  public readonly titleCase = (str: string): string => {
+    return str
+      .toLowerCase()
+      .split(' ')
+      .map(word => {
+        return word.replace(word[0], word[0].toUpperCase());
+      })
+      .join(' ');
+  };
   /**
    * Map the source column as an integer. ex: "integer('Order Number')" => 1000
    *
    * @param  name  of column in source row to map
    * @returns value of source column as an integer
    */
-  export function integer(row: any, name: string): number {
-    return Math.floor(float(row, name));
-  }
+  public readonly integer = (name: string): number => {
+    return Math.floor(this.float(name));
+  };
   /**
    * Map the source column as a float. ex: "float('Longitude')" => -84.1414334
    *
@@ -131,8 +128,8 @@ export namespace Dsl {
    * @param  name  of column in source row to map
    * @returns value of source column as a 64bit float
    */
-  export function float(row: any, name: string): number {
-    const s = row[name];
+  public readonly float = (name: string): number => {
+    const s = this.row[name];
     if (s === undefined) {
       throw Error(`${name} is undefined`);
     }
@@ -141,5 +138,5 @@ export namespace Dsl {
       throw Error(`${name} is not a number`);
     }
     return val;
-  }
+  };
 }
