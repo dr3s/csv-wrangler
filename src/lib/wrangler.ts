@@ -56,6 +56,10 @@ export async function wrangleFileAsync(
  * Files should be provided as a [[Readable]] stream of comma separated values with newline delimters.
  * Configuration of the transformation can be provided programmatically or via a file.
  *
+ * The result of this function is another [[Readable]] streams that supports the typical node streams events
+ * plus a 'skip' event that can be used to get information about skipped rows and the errors that caused them.
+ *
+ * The 'error' event is terminal.
  *
  * ### Example
  * ```typescript
@@ -95,7 +99,10 @@ export async function wrangleFileAsync(
  * w.wrangle(
  *   sourceCsv,
  *   mapping
- * ).pipe(outputStream);
+ * )
+ * .on('skip', (err) => console.error(err)) // log dropped rows
+ * .pipe(outputStream) // pipe it to a writable stream that takes objects
+ * .on('finish', () => doSomething()); // the writable stream has been flushed
  * ```
  *
  * ### Example of transforming with an arbitrary function
@@ -113,7 +120,10 @@ export async function wrangleFileAsync(
  *     delete mutableRow['Order Number'];
  *     return mutableRow;
  *   }
- * ).pipe(outputStream);
+ * )
+ * .on('skip', (err) => console.error(err)) // log dropped rows
+ * .pipe(outputStream) // pipe it to a writable stream that takes objects
+ * .on('finish', () => doSomething()); // the writable stream has been flushed
  * ```
  *
  * @param  sourceCsv  [[Readable]] stream of a CSV file
@@ -139,40 +149,35 @@ export function wrangle(
   return _wrangle(sourceCsv, transformer);
 }
 
+/**
+ * Build the user's transformation function based upon the [[WranglerConfig]].
+ *
+ */
 function buildTransformer(config: api.WranglerConfig): (row: object) => object {
   return row => {
     const mutableTarget = {};
+    // iterate the mappings build a function to update the named target field
     config.mappings.forEach(mapping => {
-      const context = {
-        m: mapping,
-        row,
-        value: name => api.Dsl.value(row, name),
-        integer: name => api.Dsl.integer(row, name),
-        float: name => api.Dsl.float(row, name),
-        titleCase: name => api.Dsl.titleCase(name)
-      };
+      const context = new api.Dsl(row);
 
+      // consruct the function using the context as arguments
       const mapFn = Function(
-        'row',
-        'value',
-        'integer',
-        'float',
-        'titleCase',
+        ...Object.keys(context),
         '"use strict"; return (' + mapping.formula + ');'
       );
       mutableTarget[mapping.name] = mapFn.call(
         context,
-        context.row,
-        context.value,
-        context.integer,
-        context.float,
-        context.titleCase
+        ...Object.values(context)
       );
     });
     return mutableTarget;
   };
 }
 
+/**
+ * Wrangle a CSV file stream into a stream of Objects.
+ *
+ */
 function _wrangle(
   sourceCsv: Readable,
   transformer: (row: object) => object
@@ -180,19 +185,13 @@ function _wrangle(
   const parser = parse({
     columns: true,
     skip_lines_with_error: true,
-    relax_column_count: true
+    relax_column_count: false
   });
 
   // log and collect parsing errors.  These unfortunately don't indicate which row of data failed.
   parser.on('skip', err => {
     console.error(`skipped record due to: ${err.message}`);
     outputStream.emit('skip', err);
-  });
-
-  // Catch terminal error
-  parser.on('error', err => {
-    console.error(err.message, err);
-    throw err;
   });
 
   // wrap the user's transformation function in a duplex stream
