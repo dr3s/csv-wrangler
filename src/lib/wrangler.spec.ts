@@ -3,8 +3,7 @@ import test from 'ava';
 import fs from 'fs';
 import path from 'path';
 import StreamTest from 'streamtest';
-import * as dsl from './dsl';
-import * as w from './wrangler';
+import * as w from '../index';
 
 test('can convert a CSV file to json', t => {
   return w.wrangleFileAsync(
@@ -112,7 +111,12 @@ test.cb('can handle error and skip bad rows', t => {
     }
   ];
 
-  const output = w.wrangle(sourceCsv, defaultMapping);
+  t.plan(2);
+  const output = w
+    .wrangle(sourceCsv, defaultMapping)
+    .on('skip', (err: w.MappingError) => {
+      t.is(err.message, 'Count is not a number');
+    });
 
   const verify = StreamTest.v2.toObjects((err, objs: any) => {
     if (err) {
@@ -171,7 +175,7 @@ test.cb('can read large dataset', t => {
       Longitude: -81.372444
     }
   ];
-  const output = w.wrangle(sourceCsv, configPath);
+  const output = w.wrangle(sourceCsv, configPath).on('end', () => t.end());
 
   const verify = StreamTest.v2.toObjects((err, objs: any) => {
     if (err) {
@@ -179,12 +183,11 @@ test.cb('can read large dataset', t => {
       throw err;
     }
     t.deepEqual(expectedObjs[0], objs[1234]);
-    t.end();
   });
   output.pipe(verify);
 });
 
-const defaultMapping: dsl.WranglerConfig = {
+const defaultMapping: w.WranglerConfig = {
   mappings: [
     {
       name: 'OrderID',

@@ -5,6 +5,7 @@
     // TODO: allow devDependencies only in **/*.spec.ts files:
     // waiting on https://github.com/palantir/tslint/pull/3708
     "no-implicit-dependencies": [true, "dev"],
+    "no-namespace": false,
     "max-classes-per-file": [true, 5, "exclude-class-expressions"],
     "function-constructor": false,
 
