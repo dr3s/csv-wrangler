@@ -17,7 +17,6 @@ mini-wrangler for csv files
 I chose Typescript for this project because of its ease of use with string manipulation tasks.  I utilized an existing library for csv parsing and for building function based duplex streams.
 
 Node streams module is very suited for processing large amounts of data without retaining it all in memory but it is single-threaded.   
-
 The wrangle functions work by piping the caller's input stream first through a parser, then transformation functions built from the configuration DSL.
 
 The API provided by Node streams makes for a convenient and familiar API for users of the library.
@@ -25,10 +24,11 @@ The API provided by Node streams makes for a convenient and familiar API for use
 The configuration DSL relies on javascript formulas with a few convenience functions executed in the context of the row being transformed.
 
 #### Assumptions and Simplifications
+* Library will be used as an API and not a command-line executable.
 * Data doesn't need to be processed in parallel and can be done sufficiently fast single-threaded.
 * All the input could be parsed simply as a string, so that it could be used in the transformation function however needed.  This means evaluation of input format rules are combined with transformation execution.
 * It's ok to evaluate user javascript in a limited scope because the library would be used in the callers VM and not a shared server context.
-* Only one mapping per output target field.
+* Only one mapping per output target field is required.
 * To keep dependencies down, big decimals are not directly implemented but instead are just treated as strings.
 
 #### Possible Improvements
