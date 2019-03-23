@@ -70,8 +70,15 @@
 						<section class="tsd-index-section ">
 							<h3>Classes</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class"><a href="classes/mapping.html" class="tsd-kind-icon">Mapping</a></li>
-								<li class="tsd-kind-class"><a href="classes/wrangler.html" class="tsd-kind-icon">Wrangler</a></li>
+								<li class="tsd-kind-class"><a href="classes/dsl.html" class="tsd-kind-icon">Dsl</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Interfaces</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface"><a href="interfaces/mapping.html" class="tsd-kind-icon">Mapping</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/mappingerror.html" class="tsd-kind-icon">Mapping<wbr>Error</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/wranglerconfig.html" class="tsd-kind-icon">Wrangler<wbr>Config</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-not-exported">
@@ -84,9 +91,10 @@
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-is-not-exported"><a href="globals.html#buildtransformer" class="tsd-kind-icon">build<wbr>Transformer</a></li>
+								<li class="tsd-kind-function tsd-is-not-exported"><a href="globals.html#processcsv" class="tsd-kind-icon">process<wbr>Csv</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#wrangle" class="tsd-kind-icon">wrangle</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#wranglefile" class="tsd-kind-icon">wrangle<wbr>File</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#wranglemapping" class="tsd-kind-icon">wrangle<wbr>Mapping</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#wranglefileasync" class="tsd-kind-icon">wrangle<wbr>File<wbr>Async</a></li>
 							</ul>
 						</section>
 					</div>
@@ -100,7 +108,7 @@
 					<div class="tsd-signature tsd-kind-icon">pipeline<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">__promisify__</span><span class="tsd-signature-symbol"> =&nbsp;util.promisify(stream.pipeline)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/dr3s/csv-wrangler/blob/e3a54ad/src/lib/wrangler.ts#L7">lib/wrangler.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/dr3s/csv-wrangler/blob/57d8590/src/lib/wrangler.ts#L8">lib/wrangler.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -110,133 +118,276 @@
 					<div class="tsd-signature tsd-kind-icon">transform<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;require(&#x27;stream-transform&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/dr3s/csv-wrangler/blob/e3a54ad/src/lib/wrangler.ts#L6">lib/wrangler.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/dr3s/csv-wrangler/blob/57d8590/src/lib/wrangler.ts#L7">lib/wrangler.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="wrangle" class="tsd-anchor"></a>
-					<h3>wrangle</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">wrangle<span class="tsd-signature-symbol">(</span>sourceCsv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readable</span>, transformer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readable</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-is-not-exported">
+					<a name="buildtransformer" class="tsd-anchor"></a>
+					<h3>build<wbr>Transformer</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">build<wbr>Transformer<span class="tsd-signature-symbol">(</span>config<span class="tsd-signature-symbol">: </span><a href="interfaces/wranglerconfig.html" class="tsd-signature-type">WranglerConfig</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/dr3s/csv-wrangler/blob/e3a54ad/src/lib/wrangler.ts#L90">lib/wrangler.ts:90</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>sourceCsv: <span class="tsd-signature-type">Readable</span></h5>
-								</li>
-								<li>
-									<h5>transformer: <span class="tsd-signature-type">function</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-siganture">
-											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>row<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5>row: <span class="tsd-signature-type">any</span></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Readable</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="wranglefile" class="tsd-anchor"></a>
-					<h3>wrangle<wbr>File</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">wrangle<wbr>File<span class="tsd-signature-symbol">(</span>sourcePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, targetPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, transformer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/dr3s/csv-wrangler/blob/e3a54ad/src/lib/wrangler.ts#L14">lib/wrangler.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/dr3s/csv-wrangler/blob/57d8590/src/lib/wrangler.ts#L159">lib/wrangler.ts:159</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Wrangle a CSV file into a new line delimited JSON file</p>
+									<p>Build the user&#39;s transformation function based upon the <a href="interfaces/wranglerconfig.html">WranglerConfig</a>.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>sourcePath: <span class="tsd-signature-type">string</span></h5>
+									<h5>config: <a href="interfaces/wranglerconfig.html" class="tsd-signature-type">WranglerConfig</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p><a href="interfaces/wranglerconfig.html">WranglerConfig</a> describing the user&#39;s transformations</p>
+									</div>
 								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">function</span></h4>
+							<p>a transform function that takes a row object and returns a new row object</p>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>row<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5>row: <span class="tsd-signature-type">object</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-is-not-exported">
+					<a name="processcsv" class="tsd-anchor"></a>
+					<h3>process<wbr>Csv</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">process<wbr>Csv<span class="tsd-signature-symbol">(</span>sourceCsv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readable</span>, transformer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readable</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/dr3s/csv-wrangler/blob/57d8590/src/lib/wrangler.ts#L189">lib/wrangler.ts:189</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Process a CSV file stream into a stream of Objects.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
 								<li>
-									<h5>targetPath: <span class="tsd-signature-type">string</span></h5>
+									<h5>sourceCsv: <span class="tsd-signature-type">Readable</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>[[Readable]] stream of a CSV file</p>
+									</div>
 								</li>
 								<li>
 									<h5>transformer: <span class="tsd-signature-type">function</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a transform function that takes a row object and returns a new row object</p>
+									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-siganture">
 											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>row<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>row<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
 											</ul>
 											<ul class="tsd-descriptions">
 												<li class="tsd-description">
 													<h4 class="tsd-parameters-title">Parameters</h4>
 													<ul class="tsd-parameters">
 														<li>
-															<h5>row: <span class="tsd-signature-type">any</span></h5>
+															<h5>row: <span class="tsd-signature-type">object</span></h5>
 														</li>
 													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
 												</li>
 											</ul>
 										</li>
 									</ul>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>a Promise</p>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Readable</span></h4>
+							<p>a Readable stream of objects defined processed by the transform function</p>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="wranglemapping" class="tsd-anchor"></a>
-					<h3>wrangle<wbr>Mapping</h3>
+					<a name="wrangle" class="tsd-anchor"></a>
+					<h3>wrangle</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">wrangle<wbr>Mapping<span class="tsd-signature-symbol">(</span>sourceCsv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readable</span>, wrangleConfig<span class="tsd-signature-symbol">: </span><a href="classes/wrangler.html" class="tsd-signature-type">Wrangler</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readable</span></li>
+						<li class="tsd-signature tsd-kind-icon">wrangle<span class="tsd-signature-symbol">(</span>sourceCsv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readable</span>, transformOptions<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="interfaces/wranglerconfig.html" class="tsd-signature-type">WranglerConfig</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readable</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/dr3s/csv-wrangler/blob/e3a54ad/src/lib/wrangler.ts#L39">lib/wrangler.ts:39</a></li>
+									<li>Defined in <a href="https://github.com/dr3s/csv-wrangler/blob/57d8590/src/lib/wrangler.ts#L135">lib/wrangler.ts:135</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Wrangle a CSV file stream into a stream of Objects defined by the mappings in the <a href="interfaces/wranglerconfig.html">WranglerConfig</a>.</p>
+								</div>
+								<p>Files should be provided as a [[Readable]] stream of comma separated values with newline delimters.
+								Configuration of the transformation can be provided programmatically or via a file.</p>
+								<p>The result of this function is another [[Readable]] streams that supports the typical node streams events
+								plus a &#39;skip&#39; event that can be used to get information about skipped rows and the errors that caused them.</p>
+								<p>The &#39;error&#39; event is terminal.</p>
+								<h3 id="example">Example</h3>
+								<pre><code class="language-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> w <span class="hljs-keyword">from</span> <span class="hljs-string">'csv-wrangler'</span>;
+
+<span class="hljs-keyword">const</span> mapping: w.WranglerConfig = {
+  mappings: [
+       {
+          name: <span class="hljs-string">'OrderID'</span>,
+          formula: <span class="hljs-string">"integer('Order Number')"</span>
+        },
+        {
+          name: <span class="hljs-string">'OrderDate'</span>,
+          formula: <span class="hljs-string">"new Date(value('Year'),value('Month'),value('Day'))"</span>
+        },
+        {
+          name: <span class="hljs-string">'ProductID'</span>,
+          formula: <span class="hljs-string">"value('Product Number')"</span>
+        },
+        {
+          name: <span class="hljs-string">'ProductName'</span>,
+          formula: <span class="hljs-string">"titleCase(value('Product Name'))"</span>
+        },
+        {
+          name: <span class="hljs-string">'Quantity'</span>,
+          formula: <span class="hljs-string">"float('Count')"</span>
+       },
+       {
+         name: <span class="hljs-string">'Unit'</span>,
+          formula: <span class="hljs-string">"'kg'"</span>
+        }
+      ]
+    };
+
+<span class="hljs-keyword">const</span> sourcePath = path.resolve(__dirname, <span class="hljs-string">'example.csv'</span>);
+<span class="hljs-keyword">const</span> sourceCsv = fs.createReadStream(sourcePath);
+w.wrangle(
+  sourceCsv,
+  mapping
+)
+.on(<span class="hljs-string">'skip'</span>, <span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> <span class="hljs-built_in">console</span>.error(err)) <span class="hljs-comment">// log dropped rows</span>
+.pipe(outputStream) <span class="hljs-comment">// pipe it to a writable stream that takes objects</span>
+.on(<span class="hljs-string">'finish'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> doSomething()); <span class="hljs-comment">// the writable stream has been flushed</span></code></pre>
+								<h3 id="example-of-transforming-with-an-arbitrary-function">Example of transforming with an arbitrary function</h3>
+								<pre><code class="language-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> w <span class="hljs-keyword">from</span> <span class="hljs-string">'csv-wrangler'</span>;
+
+<span class="hljs-keyword">const</span> sourcePath = path.resolve(__dirname, <span class="hljs-string">'example.csv'</span>);
+<span class="hljs-keyword">const</span> sourceCsv = fs.createReadStream(sourcePath);
+
+w.wrangle(
+ sourceCsv,
+  row =&gt; {
+    <span class="hljs-keyword">const</span> mutableRow = { ...row };
+    mutableRow[<span class="hljs-string">'OrderID'</span>] = row[<span class="hljs-string">'Order Number'</span>];
+    <span class="hljs-keyword">delete</span> mutableRow[<span class="hljs-string">'Order Number'</span>];
+    <span class="hljs-keyword">return</span> mutableRow;
+  }
+)
+.on(<span class="hljs-string">'skip'</span>, (err) =&gt; <span class="hljs-built_in">console</span>.error(err)) <span class="hljs-comment">// log dropped rows</span>
+.pipe(outputStream) <span class="hljs-comment">// pipe it to a writable stream that takes objects</span>
+.on(<span class="hljs-string">'finish'</span>, () =&gt; doSomething()); <span class="hljs-comment">// the writable stream has been flushed</span></code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>sourceCsv: <span class="tsd-signature-type">Readable</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>[[Readable]] stream of a CSV file</p>
+									</div>
 								</li>
 								<li>
-									<h5>wrangleConfig: <a href="classes/wrangler.html" class="tsd-signature-type">Wrangler</a></h5>
+									<h5>transformOptions: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="interfaces/wranglerconfig.html" class="tsd-signature-type">WranglerConfig</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">function</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>can be supplied as one of the following: absolute path to config file, a <a href="interfaces/wranglerconfig.html">WranglerConfig</a> object, or a function that takes a row object and returns a new object</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Readable</span></h4>
+							<p>a Readable stream of objects defined by the <a href="interfaces/wranglerconfig.html">WranglerConfig</a> or transform function</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="wranglefileasync" class="tsd-anchor"></a>
+					<h3>wrangle<wbr>File<wbr>Async</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">wrangle<wbr>File<wbr>Async<span class="tsd-signature-symbol">(</span>sourcePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, targetPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, transformOptions<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="interfaces/wranglerconfig.html" class="tsd-signature-type">WranglerConfig</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/dr3s/csv-wrangler/blob/57d8590/src/lib/wrangler.ts#L36">lib/wrangler.ts:36</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Wrangle a CSV file into a new line delimited JSON file.</p>
+								</div>
+								<h3 id="example">Example</h3>
+								<pre><code class="language-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> w <span class="hljs-keyword">from</span> <span class="hljs-string">'csv-wrangler'</span>;
+w.wrangleFile(
+  path.resolve(__dirname, <span class="hljs-string">'example.csv'</span>),
+  path.resolve(__dirname, <span class="hljs-string">'example.json'</span>),
+  row =&gt; {
+    <span class="hljs-keyword">const</span> mutableRow = { ...row };
+    mutableRow[<span class="hljs-string">'OrderID'</span>] = row[<span class="hljs-string">'Order Number'</span>];
+    <span class="hljs-keyword">delete</span> mutableRow[<span class="hljs-string">'Order Number'</span>];
+    <span class="hljs-keyword">return</span> mutableRow;
+  }
+).catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> {
+  <span class="hljs-built_in">console</span>.log(err.message);
+});</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>sourcePath: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>absolute path to a source CSV file</p>
+									</div>
+								</li>
+								<li>
+									<h5>targetPath: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>absolute path to a file to be written with newline delimited JSON objects</p>
+									</div>
+								</li>
+								<li>
+									<h5>transformOptions: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="interfaces/wranglerconfig.html" class="tsd-signature-type">WranglerConfig</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">function</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>can be supplied as one of the following: absolute path to config file, a <a href="interfaces/wranglerconfig.html">WranglerConfig</a> object, or a function that takes a row object and returns a new object</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>a Promise when the target file is completely written</p>
 						</li>
 					</ul>
 				</section>
@@ -253,10 +404,16 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class">
-						<a href="classes/mapping.html" class="tsd-kind-icon">Mapping</a>
+						<a href="classes/dsl.html" class="tsd-kind-icon">Dsl</a>
 					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/wrangler.html" class="tsd-kind-icon">Wrangler</a>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/mapping.html" class="tsd-kind-icon">Mapping</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/mappingerror.html" class="tsd-kind-icon">Mapping<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/wranglerconfig.html" class="tsd-kind-icon">Wrangler<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#pipeline" class="tsd-kind-icon">pipeline</a>
@@ -264,14 +421,17 @@
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#transform" class="tsd-kind-icon">transform</a>
 					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#buildtransformer" class="tsd-kind-icon">build<wbr>Transformer</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#processcsv" class="tsd-kind-icon">process<wbr>Csv</a>
+					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#wrangle" class="tsd-kind-icon">wrangle</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#wranglefile" class="tsd-kind-icon">wrangle<wbr>File</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#wranglemapping" class="tsd-kind-icon">wrangle<wbr>Mapping</a>
+						<a href="globals.html#wranglefileasync" class="tsd-kind-icon">wrangle<wbr>File<wbr>Async</a>
 					</li>
 				</ul>
 			</nav>

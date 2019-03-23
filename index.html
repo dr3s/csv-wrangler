@@ -66,6 +66,90 @@
 			<div class="tsd-panel tsd-typography">
 				<h1 id="csv-wrangler">csv-wrangler</h1>
 				<p>mini-wrangler for csv files</p>
+				<h2 id="getting-started">Getting Started</h2>
+				<ul>
+					<li>Install Node &gt;= 8.9</li>
+					<li>npm prepare-release</li>
+					<li>npm i -g csv-wrangler-{version}.tgz</li>
+					<li>Create a new project and add csv-wrangler as dependency</li>
+					<li>Check out the API documentation starting with the <a href="globals.html#wrangle%5D">wrangle function</a></li>
+				</ul>
+				<h2 id="architecture-overview">Architecture Overview</h2>
+				<p>I chose Typescript for this project because of its ease of use with string manipulation tasks.  I utilized an existing library for csv parsing and for building function based duplex streams.</p>
+				<p>Node streams module is very suited for processing large amounts of data without retaining it all in memory but it is single-threaded.   </p>
+				<p>The wrangle funtions works by piping the caller&#39;s input stream first through a parser, then transformation functions built from the configuration DSL.</p>
+				<p>The API provided by Node streams makes for a convenient and familiar API for users of the library.</p>
+				<p>The configuration DSL relies on javascript formulas with a few convenience functions executed in the context of the row being transformed.</p>
+				<h4 id="assumptions-and-simplifications">Assumptions and Simplifications</h4>
+				<ul>
+					<li>Data doesn&#39;t need to be processed in parallel and can be done sufficiently fast single-threaded.</li>
+					<li>All the input could be parsed simply as a string, so that it could be used in the transformation function however needed.  This means evaluation of input format rules are combined with transformation execution.</li>
+					<li>It&#39;s ok to evaluate user javascript in a limited scope because the library would be used in the callers VM and not a shared server context.</li>
+					<li>Only one mapping per output target field.</li>
+					<li>To keep dependencies down, big decimals are not directly implemented but instead are just treated as strings.</li>
+				</ul>
+				<h4 id="possible-improvements">Possible Improvements</h4>
+				<ul>
+					<li>More tests, especially focused on error handling</li>
+					<li>Files could be split into segments to be processed in parallel by multiple processes but I would probably move to another language and framework to accomplish this.</li>
+					<li>Dedicated configuration DSL for input validation.</li>
+					<li>Create a result interface that is either returned by a Promise or via the end event to provide information about the job at completion.</li>
+					<li>Evaluation of user transformation formulas could be further isolated for security.</li>
+					<li>More DSL convenience functions could be added to simplify usage and add data types.</li>
+					<li>Each mapping overwrites the named target field, so multiple mappings targeting the same field and building upon one another isn&#39;t possible.  The target could be added to the context, so that mappings could be applied in order and use the existing target field value as a component in the formulas.</li>
+				</ul>
+				<h2 id="example-set-up">Example Set Up</h2>
+				<p>Create a new node project with the following package.json</p>
+				<pre><code class="language-json">{
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"test-wrangler"</span>,
+  <span class="hljs-attr">"version"</span>: <span class="hljs-string">"1.0.0"</span>,
+  <span class="hljs-attr">"description"</span>: <span class="hljs-string">""</span>,
+  <span class="hljs-attr">"main"</span>: <span class="hljs-string">"index.js"</span>,
+  <span class="hljs-attr">"author"</span>: <span class="hljs-string">""</span>,
+  <span class="hljs-attr">"license"</span>: <span class="hljs-string">"ISC"</span>,
+  <span class="hljs-attr">"dependencies"</span>: {
+    <span class="hljs-attr">"csv-wrangler"</span>: <span class="hljs-string">"^1.0.2"</span>
+  }
+}</code></pre>
+				<p>Try converting a csv file to Json.  The large_sample.csv and large-config.json files are in the resources directory.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> w = <span class="hljs-built_in">require</span>(<span class="hljs-string">'csv-wrangler'</span>);
+<span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+
+
+<span class="hljs-keyword">const</span> sourcePath = path.resolve(
+    __dirname,
+    <span class="hljs-string">'large_sample.csv'</span>
+); <span class="hljs-keyword">const</span> targetPath = path.resolve(
+    __dirname,
+    <span class="hljs-string">'large_sample.json'</span>
+);
+<span class="hljs-keyword">const</span> sourceCsv = fs.createReadStream(sourcePath);
+<span class="hljs-keyword">const</span> configPath = path.resolve(
+    __dirname,
+    <span class="hljs-string">'large-config.json'</span>
+);
+<span class="hljs-keyword">const</span> output = w.wrangleFileAsync(sourcePath, targetPath, configPath)
+    .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Success"</span>))
+    .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> <span class="hljs-built_in">console</span>.error(err));</code></pre>
+				<p>or reading it as a stream and logging its contents</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> outputStream = w.wrangle(sourceCsv, configPath)
+    <span class="hljs-keyword">var</span> fin = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+        outputStream.on(<span class="hljs-string">'readable'</span>, () =&gt; {
+            <span class="hljs-keyword">while</span> (record = output2.read()) {
+                <span class="hljs-built_in">console</span>.log(record);
+            }
+        });
+        outputStream.on(<span class="hljs-string">'skip'</span>, (err) =&gt; <span class="hljs-built_in">console</span>.error(err));
+        outputStream.on(<span class="hljs-string">'end'</span>, () =&gt; {
+            <span class="hljs-keyword">return</span> resolve(<span class="hljs-string">"success"</span>);
+        });
+        outputStream.on(<span class="hljs-string">'error'</span>, (err) =&gt; reject(err));
+    }).then(<span class="hljs-function"><span class="hljs-params">msg</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(msg))
+    .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(err));
+}
+<span class="hljs-keyword">catch</span> (err) { <span class="hljs-built_in">console</span>.error(err) };</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -79,10 +163,16 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class">
-						<a href="classes/mapping.html" class="tsd-kind-icon">Mapping</a>
+						<a href="classes/dsl.html" class="tsd-kind-icon">Dsl</a>
 					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/wrangler.html" class="tsd-kind-icon">Wrangler</a>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/mapping.html" class="tsd-kind-icon">Mapping</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/mappingerror.html" class="tsd-kind-icon">Mapping<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/wranglerconfig.html" class="tsd-kind-icon">Wrangler<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#pipeline" class="tsd-kind-icon">pipeline</a>
@@ -90,14 +180,17 @@
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#transform" class="tsd-kind-icon">transform</a>
 					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#buildtransformer" class="tsd-kind-icon">build<wbr>Transformer</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#processcsv" class="tsd-kind-icon">process<wbr>Csv</a>
+					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#wrangle" class="tsd-kind-icon">wrangle</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#wranglefile" class="tsd-kind-icon">wrangle<wbr>File</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#wranglemapping" class="tsd-kind-icon">wrangle<wbr>Mapping</a>
+						<a href="globals.html#wranglefileasync" class="tsd-kind-icon">wrangle<wbr>File<wbr>Async</a>
 					</li>
 				</ul>
 			</nav>
