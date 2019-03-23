@@ -70,7 +70,7 @@
 				<ul>
 					<li>Install Node &gt;= 8.9</li>
 					<li>npm install</li>
-					<li>npm run prepare-release</li>
+					<li>npm run build</li>
 					<li>npm pack</li>
 					<li>npm i -g csv-wrangler-{version}.tgz</li>
 					<li>Create a new project and add csv-wrangler as dependency</li>
@@ -78,16 +78,16 @@
 				</ul>
 				<h2 id="architecture-overview">Architecture Overview</h2>
 				<p>I chose Typescript for this project because of its ease of use with string manipulation tasks.  I utilized an existing library for csv parsing and for building function based duplex streams.</p>
-				<p>Node streams module is very suited for processing large amounts of data without retaining it all in memory but it is single-threaded.   </p>
-				<p>The wrangle functions work by piping the caller&#39;s input stream first through a parser, then transformation functions built from the configuration DSL.</p>
+				<p>Node streams module is very suited for processing large amounts of data without retaining it all in memory but it is single-threaded.<br>The wrangle functions work by piping the caller&#39;s input stream first through a parser, then transformation functions built from the configuration DSL.</p>
 				<p>The API provided by Node streams makes for a convenient and familiar API for users of the library.</p>
 				<p>The configuration DSL relies on javascript formulas with a few convenience functions executed in the context of the row being transformed.</p>
 				<h4 id="assumptions-and-simplifications">Assumptions and Simplifications</h4>
 				<ul>
+					<li>Library will be used as an API and not a command-line executable.</li>
 					<li>Data doesn&#39;t need to be processed in parallel and can be done sufficiently fast single-threaded.</li>
 					<li>All the input could be parsed simply as a string, so that it could be used in the transformation function however needed.  This means evaluation of input format rules are combined with transformation execution.</li>
 					<li>It&#39;s ok to evaluate user javascript in a limited scope because the library would be used in the callers VM and not a shared server context.</li>
-					<li>Only one mapping per output target field.</li>
+					<li>Only one mapping per output target field is required.</li>
 					<li>To keep dependencies down, big decimals are not directly implemented but instead are just treated as strings.</li>
 				</ul>
 				<h4 id="possible-improvements">Possible Improvements</h4>
