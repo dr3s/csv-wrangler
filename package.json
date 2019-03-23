@@ -1,6 +1,6 @@
 {
   "name": "csv-wrangler",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "mini-wrangler for csv files",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
