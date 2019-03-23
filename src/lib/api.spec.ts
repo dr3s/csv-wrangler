@@ -9,7 +9,7 @@ test.cb('can make a float', t => {
 
   const dsl = new Dsl(data);
 
-  const val = dsl.float('Quantity')
+  const val = dsl.float('Quantity');
   t.is(typeof val, 'number');
   t.is(val, data.Quantity);
   t.end();
@@ -17,12 +17,12 @@ test.cb('can make a float', t => {
 
 test.cb('can make an integer', t => {
   const data = {
-    'Order Number': 1000.00
+    'Order Number': 1000.0
   };
 
   const dsl = new Dsl(data);
 
-  const val = dsl.integer('Order Number')
+  const val = dsl.integer('Order Number');
   t.is(typeof val, 'number');
   t.is(val, 1000);
   t.end();
@@ -30,12 +30,12 @@ test.cb('can make an integer', t => {
 
 test.cb('can floor an integer', t => {
   const data = {
-    'Order Number': 1000.80
+    'Order Number': 1000.8
   };
 
   const dsl = new Dsl(data);
 
-  const val = dsl.integer('Order Number')
+  const val = dsl.integer('Order Number');
   t.is(typeof val, 'number');
   t.is(val, 1000);
   t.end();
@@ -48,7 +48,7 @@ test.cb('can make string titlecase', t => {
 
   const dsl = new Dsl(data);
 
-  const val = dsl.titleCase(dsl.value('Product Name'))
+  const val = dsl.titleCase(dsl.value('Product Name'));
   t.is(typeof val, 'string');
   t.is(val, 'Iceberg Lettuce');
   t.end();

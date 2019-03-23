@@ -134,11 +134,11 @@ export class Dsl {
    * @returns value of source column as a 64bit float
    */
   public readonly float = (name: string): number => {
-    const s:string = `${this.row[name]}`;
-    if (s === undefined) {
-      throw Error(`${name} is undefined`);
+    const s = this.row[name];
+    if (s === undefined || s === null) {
+      throw Error(`${name} is not in the source row`);
     }
-    const val = Number(s.replace(/,/g, ''));
+    const val = Number(`${s}`.replace(/,/g, ''));
     if (val === undefined || Number.isNaN(val)) {
       throw Error(`${name} is not a number`);
     }
