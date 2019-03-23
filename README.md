@@ -5,6 +5,7 @@ mini-wrangler for csv files
 ## Getting Started
 
 * Install Node >= 8.9
+* npm install
 * npm run prepare-release
 * npm pack
 * npm i -g csv-wrangler-{version}.tgz
