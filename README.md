@@ -7,9 +7,8 @@ This library provides a configurable way of parsing and transforming CSV files i
 * Install Node >= 8.9
 * npm install
 * npm run build
-* npm pack
-* npm i -g csv-wrangler-{version}.tgz
-* Create a new project and add csv-wrangler as dependency
+* npm link
+* Create a new project and add csv-wrangler as dependency or npm link csv-wrangler
 * Check out the API documentation starting with the [wrangle function](globals.html#wrangle])
 
 ## Architecture Overview
