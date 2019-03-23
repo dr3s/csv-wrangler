@@ -77,3 +77,14 @@ test.cb('throws error when missing value', t => {
   t.throws(() => dsl.value('Product Nome', true));
   t.end();
 });
+
+test.cb('can apply regex', t => {
+  const data = {
+    'Product Number': 'P-1001'
+  };
+
+  const dsl = new Dsl(data);
+
+  t.is(/\w+-(\d+)/g.exec(dsl.value('Product Number'))[1], '1001');
+  t.end();
+});
