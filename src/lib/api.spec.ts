@@ -63,7 +63,7 @@ test.cb('can get value', t => {
 
   const val = dsl.value('Product Name');
   t.is(typeof val, 'string');
-  t.is(val, data["Product Name"]);
+  t.is(val, data['Product Name']);
   t.end();
 });
 

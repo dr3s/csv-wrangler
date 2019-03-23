@@ -106,7 +106,7 @@ export class Dsl {
     }
     return s;
   };
-  
+
   /**
    * Convert a string to Title Case. ex: "a green apple" => "A Green Apple"
    *
@@ -128,7 +128,10 @@ export class Dsl {
    * @param  name  of column in source row to map
    * @returns value of source column as an integer
    */
-  public readonly integer = (name: string, required: boolean = false): number => {
+  public readonly integer = (
+    name: string,
+    required: boolean = false
+  ): number => {
     return Math.floor(this.float(name, required));
   };
   /**
