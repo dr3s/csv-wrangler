@@ -79,7 +79,7 @@
 				<h2 id="architecture-overview">Architecture Overview</h2>
 				<p>I chose Typescript for this project because of its ease of use with string manipulation tasks.  I utilized an existing library for csv parsing and for building function based duplex streams.</p>
 				<p>Node streams module is very suited for processing large amounts of data without retaining it all in memory but it is single-threaded.   </p>
-				<p>The wrangle funtions works by piping the caller&#39;s input stream first through a parser, then transformation functions built from the configuration DSL.</p>
+				<p>The wrangle functions work by piping the caller&#39;s input stream first through a parser, then transformation functions built from the configuration DSL.</p>
 				<p>The API provided by Node streams makes for a convenient and familiar API for users of the library.</p>
 				<p>The configuration DSL relies on javascript formulas with a few convenience functions executed in the context of the row being transformed.</p>
 				<h4 id="assumptions-and-simplifications">Assumptions and Simplifications</h4>
