@@ -99,9 +99,14 @@ export class Dsl {
    * @param  name  of column in source row to map
    * @returns value of source column
    */
-  public readonly value = (name: string): any => {
-    return this.row[name];
+  public readonly value = (name: string, required: boolean = false): any => {
+    const s = this.row[name];
+    if (required && (s === undefined || s === null)) {
+      throw Error(`${name} is not in the source row`);
+    }
+    return s;
   };
+  
   /**
    * Convert a string to Title Case. ex: "a green apple" => "A Green Apple"
    *
@@ -123,8 +128,8 @@ export class Dsl {
    * @param  name  of column in source row to map
    * @returns value of source column as an integer
    */
-  public readonly integer = (name: string): number => {
-    return Math.floor(this.float(name));
+  public readonly integer = (name: string, required: boolean = false): number => {
+    return Math.floor(this.float(name, required));
   };
   /**
    * Map the source column as a float. ex: "float('Longitude')" => -84.1414334
@@ -133,12 +138,9 @@ export class Dsl {
    * @param  name  of column in source row to map
    * @returns value of source column as a 64bit float
    */
-  public readonly float = (name: string): number => {
-    const s = this.row[name];
-    if (s === undefined || s === null) {
-      throw Error(`${name} is not in the source row`);
-    }
-    const val = Number(`${s}`.replace(/,/g, ''));
+  public readonly float = (name: string, required: boolean = false): number => {
+    const s = this.value(name, required);
+    const val = Number(`${s}`.replace(/,/g, '')); // force to string to allow regex
     if (val === undefined || Number.isNaN(val)) {
       throw Error(`${name} is not a number`);
     }

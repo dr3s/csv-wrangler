@@ -53,3 +53,27 @@ test.cb('can make string titlecase', t => {
   t.is(val, 'Iceberg Lettuce');
   t.end();
 });
+
+test.cb('can get value', t => {
+  const data = {
+    'Product Name': 'iceberg lettuce'
+  };
+
+  const dsl = new Dsl(data);
+
+  const val = dsl.value('Product Name');
+  t.is(typeof val, 'string');
+  t.is(val, data["Product Name"]);
+  t.end();
+});
+
+test.cb('throws error when missing value', t => {
+  const data = {
+    'Product Name': 'iceberg lettuce'
+  };
+
+  const dsl = new Dsl(data);
+
+  t.throws(() => dsl.value('Product Nome', true));
+  t.end();
+});
