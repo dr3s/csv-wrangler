@@ -65,7 +65,8 @@
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
 				<h1 id="csv-wrangler">csv-wrangler</h1>
-				<p>mini-wrangler for csv files</p>
+				<h4 id="mini-wrangler-for-csv-files">mini-wrangler for csv files</h4>
+				<p>This library provides a configurable way of parsing and transforming CSV files into javascript objects or JSON.  Mappings are able to be declared programmatically or provided via configuration.</p>
 				<h2 id="getting-started">Getting Started</h2>
 				<ul>
 					<li>Install Node &gt;= 8.9</li>
@@ -84,6 +85,7 @@
 				<h4 id="assumptions-and-simplifications">Assumptions and Simplifications</h4>
 				<ul>
 					<li>Library will be used as an API and not a command-line executable.</li>
+					<li>Output format when written to a file is newline delimited JSON.</li>
 					<li>Data doesn&#39;t need to be processed in parallel and can be done sufficiently fast single-threaded.</li>
 					<li>All the input could be parsed simply as a string, so that it could be used in the transformation function however needed.  This means evaluation of input format rules are combined with transformation execution.</li>
 					<li>It&#39;s ok to evaluate user javascript in a limited scope because the library would be used in the callers VM and not a shared server context.</li>
