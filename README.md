@@ -18,7 +18,7 @@ I chose Typescript for this project because of its ease of use with string manip
 
 Node streams module is very suited for processing large amounts of data without retaining it all in memory but it is single-threaded.   
 
-The wrangle funtions works by piping the caller's input stream first through a parser, then transformation functions built from the configuration DSL.
+The wrangle functions work by piping the caller's input stream first through a parser, then transformation functions built from the configuration DSL.
 
 The API provided by Node streams makes for a convenient and familiar API for users of the library.
 
