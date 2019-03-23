@@ -1,6 +1,6 @@
 # csv-wrangler
-
-mini-wrangler for csv files
+#### mini-wrangler for csv files
+This library provides a configurable way of parsing and transforming CSV files into javascript objects or JSON.  Mappings are able to be declared programmatically or provided via configuration.
 
 ## Getting Started
 
@@ -25,6 +25,7 @@ The configuration DSL relies on javascript formulas with a few convenience funct
 
 #### Assumptions and Simplifications
 * Library will be used as an API and not a command-line executable.
+* Output format when written to a file is newline delimited JSON.
 * Data doesn't need to be processed in parallel and can be done sufficiently fast single-threaded.
 * All the input could be parsed simply as a string, so that it could be used in the transformation function however needed.  This means evaluation of input format rules are combined with transformation execution.
 * It's ok to evaluate user javascript in a limited scope because the library would be used in the callers VM and not a shared server context.
