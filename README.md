@@ -5,7 +5,8 @@ mini-wrangler for csv files
 ## Getting Started
 
 * Install Node >= 8.9
-* npm prepare-release
+* npm run prepare-release
+* npm pack
 * npm i -g csv-wrangler-{version}.tgz
 * Create a new project and add csv-wrangler as dependency
 * Check out the API documentation starting with the [wrangle function](globals.html#wrangle])
