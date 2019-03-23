@@ -51,7 +51,7 @@ export async function wrangleFileAsync(
 }
 
 /**
- * Wrangle a CSV file stream into a stream of Objects.
+ * Wrangle a CSV file stream into a stream of Objects defined by the mappings in the [[WranglerConfig]].
  *
  * Files should be provided as a [[Readable]] stream of comma separated values with newline delimters.
  * Configuration of the transformation can be provided programmatically or via a file.
@@ -146,12 +146,15 @@ export function wrangle(
       ? (config as ((row: object) => object))
       : buildTransformer(config as api.WranglerConfig);
 
-  return _wrangle(sourceCsv, transformer);
+  return processCsv(sourceCsv, transformer);
 }
 
 /**
  * Build the user's transformation function based upon the [[WranglerConfig]].
  *
+ * @param  config  [[WranglerConfig]] describing the user's transformations
+ *
+ * @returns       a transform function that takes a row object and returns a new row object
  */
 function buildTransformer(config: api.WranglerConfig): (row: object) => object {
   return row => {
@@ -175,10 +178,15 @@ function buildTransformer(config: api.WranglerConfig): (row: object) => object {
 }
 
 /**
- * Wrangle a CSV file stream into a stream of Objects.
+ * Process a CSV file stream into a stream of Objects.
  *
+ *
+ * @param  sourceCsv  [[Readable]] stream of a CSV file
+ * @param  transformer     a transform function that takes a row object and returns a new row object
+ *
+ * @returns       a Readable stream of objects defined processed by the transform function
  */
-function _wrangle(
+function processCsv(
   sourceCsv: Readable,
   transformer: (row: object) => object
 ): Readable {

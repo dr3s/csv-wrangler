@@ -1,5 +1,10 @@
 /**
- * Wrangle can be configured programmatically or from a file
+ * Wrangle can be configured programmatically or from a file.
+ *
+ * The config contains a set of mappings that set fields in a target object in the order that they are defined.
+ * Only the last mapping for a field will be in the result.  The formulas are simple javascript expressions that
+ * can reference global types and functions, as well as the functions defined in the DSL class that are applied to
+ * the row in context.
  *
  * ```typescript
  *
@@ -129,7 +134,7 @@ export class Dsl {
    * @returns value of source column as a 64bit float
    */
   public readonly float = (name: string): number => {
-    const s = this.row[name];
+    const s:string = `${this.row[name]}`;
     if (s === undefined) {
       throw Error(`${name} is undefined`);
     }
